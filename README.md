@@ -70,6 +70,6 @@ Blender (render dari IFC), Python (pandas, openpyxl, python-docx, matplotlib). R
 
 Semua berkas ada di repositori ini: laporan (`10 Laporan/*.pdf`, `*.docx`), gambar DED (`07 DED dan RKS/Gambar/DWG` dan PDF),
 Excel per tahap, model IFC (`model/`), dan RKS. Paket zip per kelompok ada di
-[Releases](../../releases/latest).
+[Releases](https://github.com/defsayurinda/studi-kasus-rs-batanghari-publik/releases/latest).
 
 Catatan: repositori ini adalah salinan publik tanpa riwayat commit dan tanpa berkas evaluasi internal.
