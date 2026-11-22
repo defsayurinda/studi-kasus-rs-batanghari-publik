@@ -1,0 +1,5 @@
+# berkas model dibiarkan apa adanya (tanpa konversi akhir baris)
+*.bimc -text
+*.bimt -text
+*.ifc -text
+*.dxf -text

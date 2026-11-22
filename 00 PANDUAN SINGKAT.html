@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Panduan Singkat Studi Kasus Terpadu</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 16mm 15mm; }
+  :root { --tinta:#1f2328; --redup:#5b6470; --garis:#d7dbe0; --aksen:#8a5a2b; --latar:#f6f3ee; --hijau:#2f6f4f; --merah:#a23b2a; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Calibri, Arial, sans-serif; color: var(--tinta); font-size: 10pt; line-height: 1.45; margin: 0; }
+  h1 { font-size: 20pt; margin: 0 0 2mm; color: var(--aksen); letter-spacing: -0.2pt; }
+  h2 { font-size: 13pt; margin: 6mm 0 2mm; padding-bottom: 1mm; border-bottom: 1.5pt solid var(--aksen); break-after: avoid; }
+  h3 { font-size: 10.5pt; margin: 3mm 0 1mm; break-after: avoid; }
+  p { margin: 0 0 2mm; }
+  .sub { color: var(--redup); margin-bottom: 4mm; }
+  table { width: 100%; border-collapse: collapse; margin: 1mm 0 3mm; break-inside: auto; }
+  th, td { border: 0.6pt solid var(--garis); padding: 1.3mm 2mm; vertical-align: top; text-align: left; }
+  th { background: var(--latar); font-weight: 600; }
+  tr { break-inside: avoid; }
+  code, .kode { font-family: Consolas, "Courier New", monospace; font-size: 9pt; background: #eef0f2; padding: 0 1mm; border-radius: 1mm; }
+  .kotak { background: var(--latar); border-left: 3pt solid var(--aksen); padding: 2.5mm 3.5mm; margin: 2mm 0 3mm; break-inside: avoid; }
+  .awas { border-left-color: var(--merah); }
+  .ok { color: var(--hijau); font-weight: 600; }
+  .belum { color: var(--merah); font-weight: 600; }
+  ol, ul { margin: 0 0 2mm; padding-left: 5.5mm; }
+  li { margin-bottom: 0.8mm; }
+  .dua { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .halbaru { break-before: page; }
+  .kecil { font-size: 8.5pt; color: var(--redup); }
+  figure { margin: 2mm 0 4mm; break-inside: avoid; text-align: center; }
+  figure svg { width: 100%; height: auto; }
+  figcaption { font-size: 8.5pt; color: var(--redup); margin-top: 1mm; }
+  svg text { font-family: "Segoe UI", Calibri, Arial, sans-serif; }
+</style>
+</head>
+<body>
+
+<h1>Studi Kasus Terpadu: Rumah Sakit 6 Lantai + Basement</h1>
+<p class="sub">Panduan singkat portofolio utama Defsa · disusun 18 November 2026 · folder kerja <code>Portofolio\10 Studi Kasus Terpadu</code></p>
+
+<div class="kotak">
+<b>Intinya.</b> Satu proyek utuh, dikerjakan sendiri dengan bantuan AI: rumah sakit 6 lantai + 1 basement di tepi Sungai Batanghari, Jambi,
+dari perencanaan, penyelidikan tanah, struktur atas-tengah-bawah, DED, RAB, sampai jadwal (v1.0), lalu tender, pelaksanaan,
+serah terima, dan perawatan (v2.0). Datanya simulasi yang <b>sengaja dibuat bermasalah</b> supaya kamu belajar menemukan dan
+menyelesaikan masalah. Semua dikerjakan dengan alat openBIM (sebagian besar open source), diverifikasi dua cara, lalu terbit di GitHub.
+</div>
+
+<figure>
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- langit dan muka tanah -->
+  <rect x="0" y="0" width="720" height="300" fill="#ffffff"/>
+  <!-- lapisan tanah -->
+  <rect x="0" y="170" width="720" height="30" fill="#5a4632"/>
+  <rect x="0" y="200" width="720" height="40" fill="#8c7a5b"/>
+  <rect x="0" y="240" width="720" height="34" fill="#d9c58f"/>
+  <rect x="0" y="274" width="720" height="26" fill="#b5a68a"/>
+  <text x="8" y="189" font-size="10" fill="#fff">Gambut / organik</text>
+  <text x="8" y="223" font-size="10" fill="#fff">Lempung lunak</text>
+  <text x="8" y="260" font-size="10" fill="#3b3121">Pasir / lanau</text>
+  <text x="8" y="292" font-size="10" fill="#3b3121">Lapisan keras (dugaan)</text>
+  <!-- sungai -->
+  <path d="M560 170 L600 150 L720 150 L720 205 L640 205 Z" fill="#6aa3c8"/>
+  <text x="712" y="142" font-size="11" fill="#2b5d7d" font-weight="600" text-anchor="end">Sungai Batanghari</text>
+  <path d="M560 170 L600 150" stroke="#2b5d7d" stroke-width="1.5"/>
+  <text x="560" y="128" font-size="9" fill="#a23b2a">tebing &amp; banjir</text>
+  <!-- muka air tanah -->
+  <line x1="0" y1="182" x2="560" y2="182" stroke="#2b7bb9" stroke-width="1.2" stroke-dasharray="6 4"/>
+  <text x="450" y="179" font-size="9" fill="#2b7bb9">MAT tinggi</text>
+  <!-- bangunan tua tetangga -->
+  <rect x="60" y="120" width="70" height="50" fill="#c9c2b5" stroke="#7a7266"/>
+  <text x="62" y="114" font-size="9" fill="#5b6470">bangunan tua</text>
+  <!-- gedung RS 6 lantai -->
+  <g stroke="#1f2328" stroke-width="1">
+    <rect x="200" y="20" width="250" height="150" fill="#f6f3ee"/>
+    <line x1="200" y1="45" x2="450" y2="45"/><line x1="200" y1="70" x2="450" y2="70"/>
+    <line x1="200" y1="95" x2="450" y2="95"/><line x1="200" y1="120" x2="450" y2="120"/>
+    <line x1="200" y1="145" x2="450" y2="145"/>
+    <!-- basement -->
+    <rect x="200" y="170" width="250" height="28" fill="#e7e1d6"/>
+  </g>
+  <text x="325" y="12" font-size="11" text-anchor="middle" font-weight="600" fill="#8a5a2b">Rumah sakit 6 lantai</text>
+  <text x="325" y="189" font-size="10" text-anchor="middle" fill="#1f2328">Basement</text>
+  <!-- dinding penahan galian -->
+  <rect x="194" y="160" width="6" height="58" fill="#8a5a2b"/><rect x="450" y="160" width="6" height="58" fill="#8a5a2b"/>
+  <text x="462" y="230" font-size="9" fill="#ffffff" font-weight="600">dinding penahan galian</text>
+  <!-- tiang -->
+  <g stroke="#3b3121" stroke-width="3">
+    <line x1="220" y1="198" x2="220" y2="290"/><line x1="265" y1="198" x2="265" y2="290"/>
+    <line x1="310" y1="198" x2="310" y2="290"/><line x1="355" y1="198" x2="355" y2="290"/>
+    <line x1="400" y1="198" x2="400" y2="290"/><line x1="435" y1="198" x2="435" y2="290"/>
+  </g>
+  <text x="325" y="238" font-size="10" text-anchor="middle" fill="#fff" font-weight="600">tiang pondasi</text>
+  <!-- label tahap -->
+  <g font-size="9" fill="#1f2328">
+    <text x="458" y="28">Desain konsep (Tahap 3)</text>
+    <text x="458" y="42">Struktur atas (Tahap 4)</text>
+    <text x="458" y="158">Struktur tengah (Tahap 5)</text>
+    <text x="230" y="268" fill="#3b3121">Struktur bawah (Tahap 6)</text>
+  </g>
+</svg>
+<figcaption>Gambar 1. Skema kasus: gedung 6 lantai + basement di tanah lunak/gambut, muka air tinggi, dekat tebing sungai dan bangunan tua (ilustrasi, bukan skala).</figcaption>
+</figure>
+
+<h2>1. Tujuan dan hasil akhir</h2>
+<ul>
+  <li><b>Portofolio utama dan pertama</b>: bukti kemampuan dari tanah sampai biaya, dengan fokus geoteknik.</li>
+  <li><b>Media belajar</b> teknik sipil dan AI: kamu insinyurnya, AI asistennya.</li>
+  <li><b>Hasil terbit</b>: repo GitHub publik (DED, model 3D/IFC, hitungan, analisis, laporan bisa diunduh) dan halaman di situs portofolio.</li>
+  <li><b>Bisa diverifikasi</b>: setiap angka penting dicek dua cara dan dicatat di <code>VERIFIKASI.md</code>.</li>
+</ul>
+
+<h2>2. Skenario dan tahap</h2>
+<table>
+  <tr><th style="width:22%">Butir</th><th>Keputusan</th></tr>
+  <tr><td>Bangunan</td><td>Rumah sakit 6 lantai + 1 basement, ±100–150 tempat tidur. Istilah kelas mengikuti Permenkes 6/2026 (klasifikasi pelayanan), bukan "tipe C".</td></tr>
+  <tr><td>Lokasi</td><td>Tepi Sungai Batanghari, Jambi (lahan fiktif). Gambut/lempung lunak, muka air tinggi, banjir, bangunan tua di sebelah.</td></tr>
+  <tr><td>Tingkat kesulitan</td><td>Super sulit tapi adil: setiap masalah punya bukti di data dan penyelesaian yang bisa dipertanggungjawabkan.</td></tr>
+  <tr><td>Petunjuk</td><td>Masalah tersembunyi. Kalau macet, minta petunjuk level 1 → 4 (arah umum → data → metode → jawaban).</td></tr>
+  <tr><td>Di luar lingkup</td><td>Desain MEP (hanya beban, ruang, dan lubangnya).</td></tr>
+</table>
+
+<figure>
+<svg viewBox="0 0 720 164" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="p" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#8a5a2b"/></marker></defs>
+  <text x="0" y="14" font-size="11" font-weight="600" fill="#8a5a2b">v1.0 Perencanaan (±1 bulan)</text>
+  <g font-size="9" text-anchor="middle">
+    <g fill="#f6f3ee" stroke="#8a5a2b">
+      <rect x="0" y="22" width="60" height="40" rx="5"/><rect x="66" y="22" width="60" height="40" rx="5"/>
+      <rect x="132" y="22" width="60" height="40" rx="5"/>
+      <rect x="198" y="22" width="60" height="40" rx="5" fill="#8a5a2b"/>
+      <rect x="264" y="22" width="60" height="40" rx="5"/><rect x="330" y="22" width="60" height="40" rx="5"/>
+      <rect x="396" y="22" width="60" height="40" rx="5"/><rect x="462" y="22" width="60" height="40" rx="5"/>
+      <rect x="528" y="22" width="60" height="40" rx="5"/><rect x="594" y="22" width="60" height="40" rx="5"/>
+      <rect x="660" y="22" width="60" height="40" rx="5"/>
+    </g>
+    <g fill="#1f2328">
+      <text x="30" y="39" font-weight="600">0</text><text x="30" y="53">Kerangka</text>
+      <text x="96" y="39" font-weight="600">1</text><text x="96" y="53">Selidik tanah</text>
+      <text x="162" y="39" font-weight="600">2</text><text x="162" y="53">Olah tanah</text>
+      <text x="228" y="39" font-weight="600" fill="#fff">3</text><text x="228" y="53" fill="#fff">Desain konsep</text>
+      <text x="294" y="39" font-weight="600">4</text><text x="294" y="53">Str. atas</text>
+      <text x="360" y="39" font-weight="600">5</text><text x="360" y="53">Str. tengah</text>
+      <text x="426" y="39" font-weight="600">6</text><text x="426" y="53">Str. bawah</text>
+      <text x="492" y="39" font-weight="600">7</text><text x="492" y="53">DED + RKS</text>
+      <text x="558" y="39" font-weight="600">8</text><text x="558" y="53">RAB 5D</text>
+      <text x="624" y="39" font-weight="600">9</text><text x="624" y="53">Jadwal 4D</text>
+      <text x="690" y="39" font-weight="600">10</text><text x="690" y="53">Laporan</text>
+    </g>
+  </g>
+  <rect x="0" y="66" width="192" height="5" fill="#2f6f4f"/><text x="0" y="82" font-size="9" fill="#2f6f4f">data skenario siap (Tahap 0–1)</text>
+  <g font-size="9" fill="#8a5a2b"><text x="0" y="96">Laporan pendahuluan ← Tahap 0–1</text><text x="200" y="96">Laporan antara ← Tahap 2–3</text><text x="420" y="96">Laporan akhir ← Tahap 4–9</text></g>
+  <line x1="360" y1="101" x2="360" y2="113" stroke="#8a5a2b" marker-end="url(#p)"/>
+  <text x="0" y="124" font-size="11" font-weight="600" fill="#5b6470">v2.0 Pelaksanaan → perawatan (menyusul)</text>
+  <g font-size="9" text-anchor="middle" fill="#5b6470">
+    <g fill="#ffffff" stroke="#9aa3ad" stroke-dasharray="3 2">
+      <rect x="0" y="132" width="110" height="28" rx="5"/><rect x="120" y="132" width="110" height="28" rx="5"/>
+      <rect x="240" y="132" width="110" height="28" rx="5"/><rect x="360" y="132" width="110" height="28" rx="5"/>
+      <rect x="480" y="132" width="110" height="28" rx="5"/><rect x="600" y="132" width="118" height="28" rx="5"/>
+    </g>
+    <text x="55" y="150">Tender &amp; BoQ</text><text x="175" y="150">Metode kerja &amp; K3</text>
+    <text x="295" y="150">Pelaksanaan simulasi</text><text x="415" y="150">As-built</text>
+    <text x="535" y="150">Serah terima PHO/FHO</text><text x="659" y="150">Perawatan (BIM 7D)</text>
+  </g>
+</svg>
+<figcaption>Gambar 2. Urutan tahap. Satu tahap = satu sesi Claude Code.</figcaption>
+</figure>
+
+<table>
+  <tr><th style="width:7%">No</th><th style="width:38%">Tahap v1.0 (target ±1 bulan)</th><th>Hasil utama</th></tr>
+  <tr><td>0</td><td>Kerangka acuan</td><td>Tanggapan TOR owner, program ruang, asumsi, daftar SNI</td></tr>
+  <tr><td>1</td><td>Penyelidikan tanah dan tapak</td><td>Telaah topografi, sondir, bor/SPT, lab (data simulasi); usulan penyelidikan tambahan</td></tr>
+  <tr><td>2</td><td>Olah data tanah</td><td>Stratigrafi, parameter desain, kelas situs gempa, likuifaksi, sensitivitas</td></tr>
+  <tr><td><b>3</b></td><td><b>Desain konsep (pra-rencana)</b></td><td>BEP + template BIM; aturan tapak (KDB, KLB, GSB, sempadan sungai) dan PBG; peil terhadap banjir dan urugan; zonasi RS; denah; grid; sistem struktur; pra-dimensi; alternatif pondasi dan galian; presentasi ke owner. Model LOD 200</td></tr>
+  <tr><td>4</td><td>Struktur atas</td><td>Pembebanan (termasuk alat RS dan MEP), gempa, analisis OpenSeesPy, desain SNI 2847</td></tr>
+  <tr><td>5</td><td>Struktur tengah</td><td>Sloof, tie beam, pelat basement</td></tr>
+  <tr><td>6</td><td>Struktur bawah + basement</td><td>Tiang, pile cap, gesekan negatif, dinding penahan galian, dewatering, uplift, penurunan, tebing sungai</td></tr>
+  <tr><td>7</td><td>DED dan RKS</td><td>Gambar dari model BIM (cap "tidak untuk konstruksi") dan spesifikasi teknis</td></tr>
+  <tr><td>8</td><td>RAB (5D)</td><td>Volume bersih dari model (termasuk urugan) × AHSP SE 47/2026 × harga survei Jambi, SMKK</td></tr>
+  <tr><td>9</td><td>Jadwal (4D)</td><td>Kalender kerja, durasi dari volume dan produktivitas, kurva S, simulasi</td></tr>
+  <tr><td>10</td><td>Laporan</td><td>Laporan pendahuluan, antara, akhir; matriks verifikasi; halaman portofolio</td></tr>
+</table>
+<p><b>v2.0 (menyusul):</b> dokumen tender dan BoQ, metode kerja dan K3, pelaksanaan simulasi (uji tiang, monitoring galian, change order), as-built, serah terima PHO/FHO, manual perawatan.</p>
+
+<h2>3. Pembagian peran</h2>
+<div class="dua">
+<div>
+<h3>Kamu (insinyur)</h3>
+<ul>
+  <li>Keputusan teknis: tipe pondasi, sistem struktur, parameter tanah</li>
+  <li>Memodelkan inti di BIMCraft</li>
+  <li>Menghitung inti <b>lebih dulu</b>, sebelum melihat versi AI</li>
+  <li>Paham sampai bisa menjelaskan tanpa AI</li>
+  <li>Menyetujui angka akhir</li>
+</ul>
+</div>
+<div>
+<h3>AI (asisten)</h3>
+<ul>
+  <li>Tutor konsep dan pemeriksa pasal SNI</li>
+  <li>Cek silang, skrip Python/Excel, otomasi IFC</li>
+  <li>Memerankan owner, konsultan MK, dan reviewer</li>
+  <li>Draf laporan dan halaman situs</li>
+  <li>Tidak pernah jadi sumber angka akhir</li>
+</ul>
+</div>
+</div>
+
+<h2 class="halbaru">4. Alat dan tempatnya</h2>
+<table>
+  <tr><th style="width:26%">Kebutuhan</th><th style="width:38%">Alat</th><th>Cara buka</th></tr>
+  <tr><td>Model BIM utama</td><td>BIMCraft 0.12.0 (mirip Revit, bisa dikendalikan AI lewat MCP)</td><td>Desktop: <b>BIMCraft (Studi Kasus)</b></td></tr>
+  <tr><td>4D, 5D, IFC</td><td>Blender 5.2.4 LTS + Bonsai 0.9.0</td><td>Desktop: <b>Blender + Bonsai BIM</b></td></tr>
+  <tr><td>BIM/FEM alternatif</td><td>FreeCAD 1.1.4</td><td>Desktop: <b>FreeCAD 1.1.4</b></td></tr>
+  <tr><td>Peta lokasi</td><td>QGIS 3.44 LTR</td><td>Desktop: <b>QGIS 3.44 LTR</b></td></tr>
+  <tr><td>Jadwal</td><td>ProjectLibre</td><td>Desktop: <b>ProjectLibre</b></td></tr>
+  <tr><td>Gambar 2D</td><td>LibreCAD</td><td>Desktop</td></tr>
+  <tr><td>Analisis struktur</td><td>OpenSeesPy + opstool (utama), PyNite (cek silang), awatif (GUI web)</td><td>Python <code>.venv</code>; Desktop: <b>awatif</b></td></tr>
+  <tr><td>Geoteknik</td><td>GeoFEM3D (buatanmu), groundhog, openpile; PLAXIS 3D hanya cek silang</td><td>Desktop: <b>GeoFEM 3D</b>, <b>PLAXIS 3D</b></td></tr>
+  <tr><td>Hitungan, laporan</td><td>Excel, Word</td><td>Desktop</td></tr>
+</table>
+<figure>
+<svg viewBox="0 0 720 210" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#5b6470"/></marker></defs>
+  <g font-size="10" text-anchor="middle">
+    <!-- masukan -->
+    <rect x="0" y="20" width="130" height="50" rx="6" fill="#f6f3ee" stroke="#8a5a2b"/>
+    <text x="65" y="40" font-weight="600">Data tanah</text><text x="65" y="55">sondir, SPT, lab</text>
+    <rect x="0" y="130" width="130" height="50" rx="6" fill="#f6f3ee" stroke="#8a5a2b"/>
+    <text x="65" y="150" font-weight="600">TOR owner</text><text x="65" y="165">program ruang</text>
+    <!-- analisis -->
+    <rect x="165" y="20" width="150" height="50" rx="6" fill="#e9f1ec" stroke="#2f6f4f"/>
+    <text x="240" y="40" font-weight="600">Analisis geoteknik</text><text x="240" y="55">Python, GeoFEM3D, PLAXIS</text>
+    <rect x="165" y="130" width="150" height="50" rx="6" fill="#e9f1ec" stroke="#2f6f4f"/>
+    <text x="240" y="150" font-weight="600">Analisis struktur</text><text x="240" y="165">OpenSeesPy, PyNite</text>
+    <!-- BIMCraft pusat -->
+    <rect x="350" y="65" width="140" height="70" rx="8" fill="#8a5a2b"/>
+    <text x="420" y="92" font-weight="700" fill="#fff" font-size="12">BIMCraft</text>
+    <text x="420" y="108" fill="#fff">model, DED, tulangan</text>
+    <text x="420" y="122" fill="#fff">(AI lewat MCP)</text>
+    <!-- IFC -->
+    <circle cx="545" cy="100" r="24" fill="#ffffff" stroke="#1f2328" stroke-width="1.5"/>
+    <text x="545" y="104" font-weight="700">IFC</text>
+    <!-- keluaran -->
+    <rect x="590" y="5" width="130" height="40" rx="6" fill="#eef3f8" stroke="#2b7bb9"/>
+    <text x="655" y="22" font-weight="600">Bonsai 4D</text><text x="655" y="36">jadwal, kurva S</text>
+    <rect x="590" y="55" width="130" height="40" rx="6" fill="#eef3f8" stroke="#2b7bb9"/>
+    <text x="655" y="72" font-weight="600">Python 5D</text><text x="655" y="86">volume bersih → RAB</text>
+    <rect x="590" y="105" width="130" height="40" rx="6" fill="#eef3f8" stroke="#2b7bb9"/>
+    <text x="655" y="122" font-weight="600">DED PDF</text><text x="655" y="136">cap tidak untuk konstruksi</text>
+    <rect x="590" y="155" width="130" height="40" rx="6" fill="#eef3f8" stroke="#2b7bb9"/>
+    <text x="655" y="172" font-weight="600">Situs portofolio</text><text x="655" y="186">model 3D di browser</text>
+  </g>
+  <g stroke="#5b6470" stroke-width="1.3" fill="none" marker-end="url(#a)">
+    <line x1="130" y1="45" x2="163" y2="45"/><line x1="130" y1="155" x2="163" y2="155"/>
+    <line x1="315" y1="45" x2="350" y2="80"/><line x1="315" y1="155" x2="350" y2="120"/>
+    <line x1="490" y1="100" x2="519" y2="100"/>
+    <line x1="569" y1="95" x2="588" y2="25"/><line x1="569" y1="98" x2="588" y2="75"/>
+    <line x1="569" y1="102" x2="588" y2="125"/><line x1="569" y1="106" x2="588" y2="175"/>
+  </g>
+  <text x="0" y="205" font-size="9" fill="#5b6470">Setiap panah diperiksa dua cara dan dicatat di VERIFIKASI.md · Excel dan Word untuk hitungan dan laporan</text>
+</svg>
+<figcaption>Gambar 3. Alur data openBIM: semua tahap mengambil data dari satu model lewat IFC.</figcaption>
+</figure>
+
+<div class="kotak">
+<b>Alur openBIM:</b> BIMCraft (model, DED, tulangan, volume) → <b>IFC</b> → Bonsai (4D/5D) dan Python (tiang, tanah, RAB).
+Hasil uji alat: volume per elemen dan berat besi cocok dengan hitungan tangan (≤0,1%). Temuan: tumpang tindih di pertemuan
+kolom-balok-pelat tidak dikurangi (dobel 3,1%), jadi volume RAB nanti memakai skrip volume bersih.
+</div>
+
+<h2>5. Peta folder</h2>
+<table>
+  <tr><th style="width:38%">Lokasi</th><th>Isi</th></tr>
+  <tr><td><code>00 RANCANGAN.md</code></td><td>Semua keputusan proyek (sumber utama)</td></tr>
+  <tr><td><code>PROGRES.md</code></td><td>Posisi terakhir dan langkah berikutnya, dibaca tiap awal sesi</td></tr>
+  <tr><td><code>CLAUDE.md</code></td><td>Aturan untuk AI (otomatis terbaca)</td></tr>
+  <tr><td><code>VERIFIKASI.md</code></td><td>Matriks cek silang</td></tr>
+  <tr><td><code>CARA LANJUT MANUAL.md</code></td><td>Cara melanjutkan tanpa AI</td></tr>
+  <tr><td><code>00 Kerangka Acuan/</code> s.d. <code>10 Laporan/</code></td><td>Satu folder per tahap; Tahap 0–1 sudah berisi dokumen skenario</td></tr>
+  <tr><td><code>model/</code>, <code>skrip/</code>, <code>tests/</code></td><td>Model BIM/IFC, skrip Python, uji otomatis</td></tr>
+  <tr><td><code>acuan/</code></td><td>SNI, peraturan, AHSP, manual FHWA, jurnal; daftar lengkap di <code>acuan/README.md</code></td></tr>
+  <tr><td><code>alat/</code>, <code>.venv/</code></td><td>Program portable dan Python (dipasang ulang dengan <code>SIAPKAN.ps1</code>)</td></tr>
+  <tr><td><code>..\02 Siap Terbit\privat\studi-kasus-kunci\</code></td><td class="belum">KUNCI JAWABAN. Jangan dibuka sampai tahapnya selesai.</td></tr>
+</table>
+
+<h2>6. Validasi dan publikasi (ringkas)</h2>
+<ul>
+  <li><b>Dua cara</b> untuk setiap angka penting (contoh: OpenSeesPy vs PyNite, rumus vs GeoFEM3D/PLAXIS, volume IFC vs manual, RAB vs IKK BPS). Toleransi ditetapkan dulu: struktur ≤5–10%, geoteknik ≤15–20%.</li>
+  <li><b>Tidak ada angka tanpa sumber</b>: SNI dan pasalnya, dicek ke dokumen di <code>acuan/</code>.</li>
+  <li><b>Reviewer AI di sesi segar</b> dan <b>tinjauan dosen</b> di akhir v1.0.</li>
+  <li><b>Terbit</b>: kode MIT, gambar/laporan/data CC BY 4.0; cap "STUDI KASUS PORTOFOLIO — TIDAK UNTUK KONSTRUKSI"; <code>DISCLAIMER.md</code> menjelaskan data simulasi, peran AI secara spesifik, dan perangkat lunak; pindai privasi sebelum terbit.</li>
+</ul>
+
+<h2 class="halbaru">7. Cara memulai (sesi baru)</h2>
+<ol>
+  <li>Buka aplikasi Claude → tab <b>Code</b> → sesi baru → pilih folder kerja <code>10 Studi Kasus Terpadu</code> (bukan folder Portofolio).</li>
+  <li>Kalau muncul dialog <b>trust this folder</b>, setujui (supaya akses arsip kuliah aktif).</li>
+  <li>Beri nama sesi: <code>SK-00 Kerangka Acuan</code>, <code>SK-01 Penyelidikan Tanah</code>, dan seterusnya.</li>
+  <li>Atur panel bawah: Ponytail <b>off</b>. Pilih model dan effort sesuai tabel di bagian 8.</li>
+  <li>Ketik pesan pertama: <span class="kode">Baca PROGRES.md, kita mulai tahap 0.</span></li>
+  <li>Ikuti siklus: belajar konsep → baca dokumen → <b>kerjakan sendiri</b> → AI periksa dan cek silang → rapat simulasi → buka kunci tahap → catat.</li>
+  <li>Tutup sesi dengan: <span class="kode">Perbarui PROGRES.md dan commit.</span></li>
+  <li>Tahap berikutnya: <b>sesi baru</b>, pesan pertama <span class="kode">Baca PROGRES.md, kita lanjut tahap 1.</span></li>
+</ol>
+
+<figure>
+<svg viewBox="0 0 720 230" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="s" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#8a5a2b"/></marker></defs>
+  <circle cx="360" cy="115" r="62" fill="#f6f3ee" stroke="#8a5a2b"/>
+  <text x="360" y="108" font-size="12" text-anchor="middle" font-weight="700" fill="#8a5a2b">Satu sesi</text>
+  <text x="360" y="124" font-size="10" text-anchor="middle">= satu tahap</text>
+  <text x="360" y="139" font-size="9" text-anchor="middle" fill="#5b6470">SK-0X</text>
+  <g font-size="10" text-anchor="middle">
+    <g fill="#ffffff" stroke="#8a5a2b">
+      <rect x="290" y="0" width="140" height="34" rx="17"/>
+      <rect x="470" y="30" width="160" height="34" rx="17"/>
+      <rect x="490" y="98" width="180" height="34" rx="17"/>
+      <rect x="470" y="168" width="160" height="34" rx="17"/>
+      <rect x="290" y="196" width="140" height="34" rx="17"/>
+      <rect x="90" y="168" width="160" height="34" rx="17"/>
+      <rect x="50" y="98" width="180" height="34" rx="17"/>
+      <rect x="90" y="30" width="160" height="34" rx="17"/>
+    </g>
+    <text x="360" y="21">① Baca PROGRES.md</text>
+    <text x="550" y="51">② Belajar konsep</text>
+    <text x="580" y="119">③ Baca dokumen tahap</text>
+    <text x="550" y="189" font-weight="700">④ Kamu kerjakan dulu</text>
+    <text x="360" y="217">⑤ AI periksa + cek silang</text>
+    <text x="170" y="189">⑥ Rapat simulasi</text>
+    <text x="140" y="119">⑦ Buka kunci tahap</text>
+    <text x="170" y="51">⑧ PROGRES + commit</text>
+  </g>
+  <g stroke="#8a5a2b" stroke-width="1.2" fill="none" marker-end="url(#s)">
+    <path d="M430 17 Q470 20 500 30"/><path d="M600 64 Q610 80 600 98"/><path d="M600 132 Q610 150 600 168"/>
+    <path d="M500 202 Q470 213 430 213"/><path d="M290 213 Q250 213 220 202"/><path d="M140 168 Q120 150 130 132"/>
+    <path d="M130 98 Q120 80 140 64"/><path d="M220 30 Q250 20 290 17"/>
+  </g>
+</svg>
+<figcaption>Gambar 4. Siklus kerja setiap sesi. Kalau macet di langkah ④, minta petunjuk level 1–4.</figcaption>
+</figure>
+
+<h3>Contoh perintah selama bekerja</h3>
+<table>
+  <tr><th style="width:42%">Perintah</th><th>Fungsinya</th></tr>
+  <tr><td><span class="kode">Jelaskan konsep tahap ini dulu</span></td><td>AI jadi tutor sebelum kamu menghitung</td></tr>
+  <tr><td><span class="kode">Periksa hitunganku di &lt;berkas&gt;</span></td><td>Cek rumus, satuan, pasal SNI, lalu cek silang</td></tr>
+  <tr><td><span class="kode">Minta petunjuk level 1</span></td><td>Petunjuk bertingkat tanpa membuka kunci</td></tr>
+  <tr><td><span class="kode">Jadilah owner, saya presentasi laporan pendahuluan</span></td><td>Rapat simulasi</td></tr>
+  <tr><td><span class="kode">Sambungkan ke BIMCraft</span></td><td>Setelah BIMCraft dibuka dari Desktop; AI membaca dan memeriksa model</td></tr>
+  <tr><td><span class="kode">Buka kunci tahap 1</span></td><td>Setelah tahap selesai; membahas masalah yang terlewat</td></tr>
+  <tr><td><span class="kode">Review hitungan ini tanpa konteks</span> (di sesi baru)</td><td>Reviewer segar yang mencari kesalahan</td></tr>
+</table>
+
+<h2 class="halbaru">8. Saran pengaturan</h2>
+<table>
+  <tr><th style="width:24%">Pengaturan</th><th style="width:36%">Saran</th><th>Alasan</th></tr>
+  <tr><td>Model</td><td><b>Opus 5.5</b> untuk hitungan, keputusan teknis, review, rapat simulasi. <b>Sonnet 5.5</b> untuk pekerjaan rutin (merapikan berkas, format Excel/Word, skrip sederhana).</td><td>Opus paling teliti untuk teknik; Sonnet lebih hemat untuk yang tidak butuh penalaran berat</td></tr>
+  <tr><td>Effort</td><td><b>High</b> untuk hitungan, desain, dan review. <b>Medium</b> untuk rutin.</td><td>Hitungan teknik butuh penalaran bertahap</td></tr>
+  <tr><td>Ponytail</td><td><b>Off</b> untuk diskusi dan hitungan; <b>lite</b> saat membuat skrip</td><td>Full/ultra memangkas penjelasan yang kamu butuhkan untuk belajar</td></tr>
+  <tr><td>Output style</td><td><b>Learning</b> (AI menyisakan bagian untuk kamu kerjakan) atau <b>Explanatory</b> (lebih banyak "kenapa")</td><td>Sesuai tujuan belajar; minta AI mengaktifkannya lewat pengaturan aplikasi</td></tr>
+  <tr><td>Mode izin</td><td><b>Default</b> (bertanya sebelum mengubah berkas) atau <b>Accept edits</b> kalau sudah nyaman</td><td>Kamu tetap tahu setiap perubahan</td></tr>
+  <tr><td>Hemat token</td><td>Satu tahap satu sesi; tekan <b>Compact</b> kalau sesi panjang; mulai sesi baru kalau terasa lambat</td><td>Konteks pendek = lebih murah dan lebih fokus</td></tr>
+</table>
+
+<h3>Skill yang dipakai</h3>
+<table>
+  <tr><th style="width:36%">Skill</th><th>Kapan</th></tr>
+  <tr><td><b>defsa-yurinda-skill</b></td><td>Semua hitungan dan berkas teknik sipil (format, notasi, aturan dosen)</td></tr>
+  <tr><td>ifcos-*, bonsai-impl-* (di folder proyek)</td><td>Membuat, memeriksa, dan mengambil volume dari IFC; gambar dan 4D/5D di Bonsai</td></tr>
+  <tr><td>bim-qto, bim-clash-detection, bim-validation-pipeline, gantt-chart</td><td>Volume, deteksi tabrakan, validasi model, jadwal</td></tr>
+  <tr><td>qgis-agents-map-generator, qgis-impl-print-layouts</td><td>Peta lokasi</td></tr>
+  <tr><td>scientific-writing, scientific-critical-thinking, scientific-visualization</td><td>Laporan, reviewer kritis, grafik</td></tr>
+  <tr><td>xlsx, docx, pdf (bawaan Anthropic), dataviz</td><td>Excel hitungan, laporan Word, PDF, grafik</td></tr>
+  <tr><td>code-review / ponytail-review</td><td>Memeriksa skrip Python sebelum dipakai</td></tr>
+</table>
+
+<h2 class="halbaru">9. Skill, modul, dan model per tahap</h2>
+<p>Salinan lengkap ada di <code>PERINTAH DAN SKILL.md</code>. Panggil skill dengan menyebut namanya, misalnya <span class="kode">pakai skill bonsai-impl-qto</span>.</p>
+<table>
+  <tr><th style="width:15%">Tahap</th><th style="width:15%">Model / effort</th><th style="width:28%">Skill</th><th style="width:24%">Modul Python</th><th>Alat</th></tr>
+  <tr><td>0 Kerangka acuan</td><td>Opus / medium</td><td>defsa-yurinda-skill, docx, xlsx</td><td>openpyxl, python-docx</td><td>Word, Excel, QGIS</td></tr>
+  <tr><td>1 Selidik tanah</td><td>Opus / high</td><td>defsa-yurinda-skill, scientific-critical-thinking</td><td>pandas, pygef</td><td>Excel</td></tr>
+  <tr><td>2 Olah tanah</td><td>Opus / high</td><td>defsa-yurinda-skill, xlsx, dataviz, scientific-visualization</td><td>pandas, matplotlib, groundhog, pint</td><td>Excel, GeoFEM3D</td></tr>
+  <tr><td><b>3 Desain konsep</b></td><td>Opus / high, plan mode</td><td>defsa-yurinda-skill, bonsai-impl-modeling, ifcos-impl-creation, qgis-agents-map-generator, scientific-critical-thinking</td><td>ifcopenshell, Pynite (pra-dimensi)</td><td>BIMCraft LOD 200, QGIS, awatif</td></tr>
+  <tr><td>4 Struktur atas</td><td>Opus / high, plan mode</td><td>defsa-yurinda-skill, ifcos-syntax-api, ifcos-impl-creation, bonsai-impl-modeling</td><td>openseespy, opstool, Pynite, concreteproperties</td><td>BIMCraft, awatif</td></tr>
+  <tr><td>5 Struktur tengah</td><td>Opus / high</td><td>defsa-yurinda-skill</td><td>Pynite, concreteproperties</td><td>BIMCraft</td></tr>
+  <tr><td>6 Bawah + basement</td><td>Opus / high, plan mode</td><td>defsa-yurinda-skill, scientific-critical-thinking</td><td>openpile, groundhog, pyslope, openseespy</td><td>GeoFEM3D, PLAXIS, BIMCraft</td></tr>
+  <tr><td>7 DED dan RKS</td><td>Sonnet / medium (gambar), Opus / medium (RKS)</td><td>bonsai-impl-drawing, bim-clash-detection, bim-validation-pipeline, docx</td><td>ifcopenshell, python-docx</td><td>BIMCraft, Bonsai, LibreCAD, Word</td></tr>
+  <tr><td>8 RAB 5D</td><td>Opus high (volume), Sonnet medium (Excel), plan mode</td><td>bim-qto, bonsai-impl-qto, xlsx</td><td>ifcopenshell, pandas, openpyxl</td><td>Bonsai, Excel</td></tr>
+  <tr><td>9 Jadwal 4D</td><td>Sonnet / medium</td><td>gantt-chart, bonsai-impl-qto</td><td>ifcopenshell, networkx</td><td>Bonsai, ProjectLibre</td></tr>
+  <tr><td>10 Laporan, situs</td><td>Opus (isi), Sonnet (format)</td><td>scientific-writing, docx, pdf, dataviz</td><td>matplotlib</td><td>Word, situs</td></tr>
+  <tr><td>Review akhir</td><td>Opus / high, sesi baru</td><td>scientific-critical-thinking, code-review</td><td>pytest</td><td>-</td></tr>
+</table>
+<div class="kotak">
+<b>Aturan pakai:</b> defsa-yurinda-skill di setiap tahap yang ada hitungan. Skill pihak ketiga hanya panduan; angka tetap dicek ke SNI dan
+<code>VERIFIKASI.md</code>. Skrip baru wajib punya uji dan lolos <span class="kode">.venv\Scripts\python.exe -m pytest -q tests</span>.
+</div>
+
+<h2>10. Status kesiapan</h2>
+<table>
+  <tr><th style="width:44%">Butir</th><th style="width:18%">Status</th><th>Dibutuhkan mulai</th></tr>
+  <tr><td>Rancangan, aturan, alur kerja, panduan</td><td class="ok">Siap</td><td>Sekarang</td></tr>
+  <tr><td>Alat + pintasan Desktop (sudah diuji)</td><td class="ok">Siap</td><td>Sekarang</td></tr>
+  <tr><td>Skenario Tahap 0–1 (TOR, program ruang, data tanah)</td><td class="ok">Siap</td><td>Sekarang</td></tr>
+  <tr><td>SNI 1726, 1727, 2847, 8460, 2052</td><td class="ok">Lengkap</td><td>Tahap 2–6</td></tr>
+  <tr><td>AHSP SE Dirjen Binkon 47/2026 + IKK BPS 2025</td><td class="ok">Siap</td><td>Tahap 8</td></tr>
+  <tr><td>Repo GitHub privat (cadangan)</td><td class="belum">Belum</td><td>Segera: tentukan nama proyek</td></tr>
+  <tr><td>BEP, template BIMCraft</td><td class="belum">Belum</td><td>Awal Tahap 3</td></tr>
+  <tr><td>Skrip volume bersih, kalender kerja 4D</td><td class="belum">Belum</td><td>Tahap 8–9</td></tr>
+  <tr><td>Survei harga bahan dan upah di Jambi</td><td class="belum">Belum</td><td>Sebelum Tahap 8 (cara: SE 47/2026 Lampiran I)</td></tr>
+  <tr><td>Dosen peninjau</td><td class="belum">Belum</td><td>Hubungi sejak awal</td></tr>
+  <tr><td>Unduhan lewat browser (jurnal gambut, USACE, buku OER)</td><td class="belum">Belum</td><td>Kapan saja; tautan di <code>acuan/README.md</code></td></tr>
+  <tr><td>Data dan kejadian Tahap 3 dst.</td><td>Menyusul</td><td>Diminta ke sesi skenario saat tahapnya dimulai</td></tr>
+</table>
+
+<h2>11. Aturan penting</h2>
+<div class="kotak awas">
+<ol>
+  <li><b>Jangan membuka</b> <code>02 Siap Terbit\privat\studi-kasus-kunci\</code> sebelum tahapnya selesai.</li>
+  <li><b>Kerjakan dulu, baru minta AI memeriksa.</b> Kalau melihat jawaban AI duluan, kamu cenderung ikut setuju.</li>
+  <li><b>Tidak ada angka tanpa sumber.</b> Cocokkan pasal ke SNI di <code>acuan/privat/</code>.</li>
+  <li><b>SNI tidak boleh terbit</b> (berhak cipta). Folder <code>acuan/privat/</code> tidak ikut Git.</li>
+  <li><b>Satu tahap satu sesi</b>, mulai dengan "Baca PROGRES.md", tutup dengan "Perbarui PROGRES.md dan commit".</li>
+  <li><b>Kunci satu versi BIMCraft</b> selama proyek; jangan memperbarui di tengah jalan.</li>
+  <li>Data proyek nyata, nama orang lain, NIM, dan nomor HP <b>tidak boleh terbit</b>.</li>
+</ol>
+</div>
+<p class="kecil">Sumber keputusan lengkap: <code>00 RANCANGAN.md</code>. Hasil uji alat: <code>80 Coba Open Source\bimcraft-bonsai\HASIL UJI.md</code>.
+Daftar dokumen acuan: <code>acuan\README.md</code>. Pasang ulang alat di laptop lain: <code>SIAPKAN.ps1</code>.</p>
+
+</body>
+</html>

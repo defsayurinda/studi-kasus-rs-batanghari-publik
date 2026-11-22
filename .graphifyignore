@@ -1,0 +1,26 @@
+# graphify: jangan petakan folder ini
+# dokumen berhak cipta, alat, lingkungan Python, model besar, worktree sesi lain
+acuan/
+alat/
+.venv/
+model/
+.claude/worktrees/
+.claude/skills/
+.opstool.output/
+.pytest_cache/
+graphify-out/
+# kunci jawaban (di luar folder ini, tetap dicantumkan untuk berjaga-jaga)
+**/studi-kasus-kunci/
+**/privat/
+# berkas biner dan dokumen besar (graf hanya kode + Markdown)
+*.xlsx
+*.docx
+*.pptx
+*.pdf
+*.dwg
+*.dxf
+*.ifc
+*.bimc
+*.png
+*.jpg
+*.csv

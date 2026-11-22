@@ -1,0 +1,37 @@
+# alat dan lingkungan dipasang ulang dengan SIAPKAN.ps1
+alat/
+.venv/
+__pycache__/
+.pytest_cache/
+# dokumen berhak cipta (SNI) tidak boleh terbit
+acuan/privat/
+# manual dan jurnal: besar atau hak cipta penulis, unduh ulang dari acuan/README.md
+acuan/pustaka/
+acuan/jurnal/
+# pengaturan pribadi Claude Code
+.claude/settings.local.json
+# berkas sementara
+~$*
+*.tmp
+# cadangan otomatis CADCraft
+*.bak
+
+# berkas autosave BIMCraft
+*.autosave.bimcraft
+*.autosave.bimcraft.lock
+
+# rekaman gempa mentah PEER/ESM (syarat pemakaian sendiri)
+04 Struktur Atas/Rekaman Gempa/mentah/
+
+# model pembesian LOD 350 (82 MB): dibangun ulang dengan skrip/tahap4_besi.py
+model/RSTB-STR-T4-LOD350.bimc
+04 Struktur Atas/Gambar/_plot/
+
+# graphify: graf dibangun ulang lokal (graphify update .)
+graphify-out/
+*.graphify-bak
+
+# cache analisis OpenSees bersama (skrip/cache_analisis.py)
+cache/
+07 DED dan RKS/Gambar/BIM/
+07 DED dan RKS/Gambar/_plot/

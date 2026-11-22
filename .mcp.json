@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "bimcraft": {
+      "command": "alat/bimcraft/bimcraft-0.12.0-windows-x64-portable/bimcraft-cli.exe",
+      "args": [
+        "mcp"
+      ]
+    },
+    "bimcraft-jendela": {
+      "command": "alat/bimcraft/bimcraft-0.11.0-windows-x64-portable/bimcraft-0.11.0-windows-x64-portable/bimcraft-cli.exe",
+      "args": [
+        "mcp",
+        "--connect"
+      ]
+    },
+    "cadcraft-jendela": {
+      "command": "C:/Program Files/ArtCraft/CADCraft/cadcraft-cli.exe",
+      "args": [
+        "mcp",
+        "--lazy",
+        "--connect",
+        "127.0.0.1:7979"
+      ]
+    }
+  }
+}

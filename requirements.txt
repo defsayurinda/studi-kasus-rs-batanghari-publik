@@ -1,0 +1,29 @@
+# Pustaka Python studi kasus (dipasang ke .venv oleh SIAPKAN.ps1)
+# data & laporan
+pandas
+matplotlib
+openpyxl
+python-docx
+pint
+pytest
+py7zr
+# BIM
+ifcopenshell
+# struktur
+openseespy
+opstool
+PyNiteFEA
+pystrata
+ezdxf==1.4.5
+concreteproperties
+sectionproperties
+# geoteknik
+groundhog
+openpile
+pygef
+pyslope
+pypdf
+networkx
+cryptography
+pypdfium2
+python-pptx
